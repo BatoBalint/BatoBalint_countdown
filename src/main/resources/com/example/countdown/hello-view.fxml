@@ -11,7 +11,7 @@
    <children>
       <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="200.0">
          <children>
-             <TextField maxWidth="150" prefWidth="150" promptText="yyyy/mm/dd hh:mm:ss" fx:id="dateTime">
+             <TextField fx:id="dateTime" maxWidth="150" prefWidth="150" promptText="yyyy.mm.dd hh:mm:ss">
                <HBox.margin>
                   <Insets right="20.0" />
                </HBox.margin>
