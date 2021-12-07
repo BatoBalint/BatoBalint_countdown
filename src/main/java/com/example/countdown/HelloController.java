@@ -1,9 +1,13 @@
 package com.example.countdown;
 
+import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -22,21 +26,66 @@ public class HelloController {
     public LocalDateTime expiration;
 
     public void startBtnClick() {
-        //expiration = LocalDateTime.of(2021, 4, 32, 5, 30, 0);
         String timeText = dateTime.getText();
-        if (timeText.length() == 0) {
-            expiration = LocalDateTime.now().plusMinutes(5);
+        LocalDateTime timeUntil = textToTime(timeText);
+        if (timeUntil.isAfter(LocalDateTime.now())) {
+            start(timeUntil);
+        } else {
+            new Alert(Alert.AlertType.WARNING, "nem adhatsz meg kisebb szamot mint a mostani datum", ButtonType.OK).show();
         }
-        test();
     }
 
-    private void test() {
-        LocalDateTime testTime = LocalDateTime.now().plusSeconds(12);
+    private LocalDateTime textToTime(String timeText) {
+        LocalDateTime timeUntil = LocalDateTime.now();
+        String[] timeSplit;
+        String[] date = new String[3];
+        String[] time = new String[3];
+        Integer[] napok = new Integer[]{31,30,31,30,31,30,31,31,30,31,30,31};
+
+        if (timeText.length() == 0) {
+            timeUntil = LocalDateTime.now().plusMinutes(1);
+        } else {
+            timeSplit = timeText.split(" ");
+            if (timeSplit.length == 1) {
+                if (timeSplit[0].contains(".")) {
+                    date = mySplit(timeSplit[0], ".");
+                } else if (timeSplit[0].contains(":")) {
+                    time = mySplit(timeSplit[0], ":");
+                }
+            } else if (timeSplit.length == 2) {
+                date = mySplit(timeSplit[0], ".");
+                time = mySplit(timeSplit[1], ":");
+            }
+            for (String s : date) {
+                if (!s.matches("\\d+")) s = "0";
+            }for (String s : time) {
+                if (!s.matches("\\d+")) s = "0";
+            }
+            if (Integer.parseInt(date[2]) > napok[Integer.parseInt(date[1])]) date[2] = (Integer.parseInt(date[2]) - 1) + "";
+            timeUntil = LocalDateTime.of(Integer.parseInt(date[0]), Integer.parseInt(date[1]), Integer.parseInt(date[2]), Integer.parseInt(time[0]), Integer.parseInt(time[1]), Integer.parseInt(time[2]));
+        }
+        return timeUntil;
+    }
+
+    private String[] mySplit(String text, String regex) {
+        String[] helper = text.split(regex);
+        String[] results = new String[3];
+        for (int i = 0; i < 3; i++) {
+            if (i >= helper.length) {
+                results[i] = "0";
+            } else {
+                results[i] = helper[i];
+            }
+        }
+        return results;
+    }
+
+    private void start(LocalDateTime timeUntil) {
         t = new Timer();
         t.schedule(new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(() -> { setTime(testTime); });
+                Platform.runLater(() -> { setTime(timeUntil); });
             }
         }, 0, 1000);
 
