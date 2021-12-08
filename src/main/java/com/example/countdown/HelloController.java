@@ -40,7 +40,7 @@ public class HelloController {
         String[] timeSplit;
         String[] date = new String[3];
         String[] time = new String[3];
-        Integer[] napok = new Integer[]{31,30,31,30,31,30,31,31,30,31,30,31};
+        Integer[] napok = new Integer[]{31,28,31,30,31,30,31,31,30,31,30,31};
 
         if (timeText.length() == 0) {
             timeUntil = LocalDateTime.now().plusMinutes(1);
@@ -61,7 +61,7 @@ public class HelloController {
             }for (String s : time) {
                 if (!s.matches("\\d+")) s = "0";
             }
-            if (Integer.parseInt(date[2]) > napok[Integer.parseInt(date[1])]) date[2] = (Integer.parseInt(date[2]) - 1) + "";
+            if (Integer.parseInt(date[2]) > napok[Integer.parseInt(date[1])]) date[2] = napok[Integer.parseInt(date[1])]) + "";
             timeUntil = LocalDateTime.of(Integer.parseInt(date[0]), Integer.parseInt(date[1]), Integer.parseInt(date[2]), Integer.parseInt(time[0]), Integer.parseInt(time[1]), Integer.parseInt(time[2]));
         }
         return timeUntil;
